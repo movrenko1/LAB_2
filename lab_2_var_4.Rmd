@@ -73,7 +73,9 @@ DT.import[is.na(Netweight.kg), Year, Netweight.kg.median]
 Так как для задания нужны данные за сентябрь - декабрь, то выделяем нужные нам месяцы,
 т.е. больше 8 (= августа). Делим данные на три группы стран для дальнейшей работы: построения графиков.
 ```{r}
-unique(DT.import$Reporter)
+s <- unique(DT.import$Reporter)
+s <- s[s  !=  ""]
+s
 DT.import$Period <- (DT.import$Period) %% 100
 DT.import <- DT.import[DT.import$Period > 8,]
 DT.import$group = transmute(DT.import,
@@ -92,7 +94,6 @@ DT.import$group[DT.import$group  ==  "United Arab Emirates"] = 2
 DT.import$group[DT.import$group  ==  "Slovenia"] = 2
 DT.import$group[DT.import$group  ==  "EU-28"] = 2
 DT.import$group[DT.import$group  ==  "Mongolia"] = 2
-DT.import$group[DT.import$group  ==  ""] = 2
 DT.import[, СтраныПоставщики := factor(group, levels = c(0, 1 , 2),
                                       labels = c('страны Таможенного союза',
                                                  'остальные страны СНГ',
@@ -103,36 +104,36 @@ DT.import[, СтраныПоставщики := factor(group, levels = c(0, 1 , 
 ```{r }
 #Пакет "base"
 # простой график разброса
-plot(x = DT.import$Period, y = DT.import$Netweight.kg.median)
-# берём палитру на 5 цветов
+plot(x = DT.import$Year , y = DT.import$Netweight.kg.median)
+# берём палитру на 3 цвета
 cls <- palette(rainbow(3))
 # создаём график без осей
-summary(DT.import$Period)
+summary(DT.import$Year)
 summary(DT.import$Netweight.kg.median)
 countries <- as.factor(unique(DT.import$СтраныПоставщики))
-plot(x = DT.import$Period , 
+plot(x = DT.import$Year , 
      y = DT.import$Netweight.kg.median, 
      pch = 21, 
      bg = cls[as.factor(DT.import$СтраныПоставщики)],
      axes = F, 
      ylim = c(0, 400000), 
-     xlim = c(0, 15), 
+     xlim = c(2008, 2025), 
      xlab = 'Динамика в сентябре-декабре', 
      ylab = 'Масса поставок')
 # горизонтальная ось 
 axis(side = 1, 
      pos = 0, 
-     at = seq(0, 12, by = 3),
-     labels = seq(0, 12, by = 3))
+     at = seq(2008, 2020, by = 3),
+     labels = seq(2008, 2020, by = 3))
 # вертикальная ось
 axis(side = 2, 
      pos = 0, 
      at = seq(0, 350000, by = 50000),
-     labels = c('', seq(50000, 350000, by = 50000)),
+     labels = seq(0, 350000, by = 50000),
      las = 2)
 # стрелки на концах осей
-arrows(x0 = c(0, 12), y0 = c(350000, 0),
-       x1 = c(0, 15), y1 = c(400000, 0))
+arrows(x0 = c(0, 2020), y0 = c(350000, 0),
+       x1 = c(0, 2025), y1 = c(400000, 0))
 
 # легенда
 legend('topright', legend = countries, fill = cls[countries])
