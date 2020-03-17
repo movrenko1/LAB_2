@@ -145,6 +145,7 @@ DT.import[, СтраныПоставщики := factor(group, levels = c(0, 1 , 
 xyplot(  DT.import$Netweight.kg.median ~ DT.import$Period,
        data = DT.import,
        auto.key = T,
+       type = "l",
        groups = СтраныПоставщики,
        ylab = 'Масса поставок',
        xlab = 'Динамика в сентябре-декабре')
@@ -152,10 +153,12 @@ xyplot(  DT.import$Netweight.kg.median ~ DT.import$Period,
 Построение графика с помощью пакета «ggplot2».
 ```{r }
 # обозначаем цветом страны
-qplot(x = DT.import$Period,
+gp <- qplot(x = DT.import$Period,
       y = DT.import$Netweight.kg.median, 
       data = DT.import, 
       color = СтраныПоставщики,
       xlab = 'Динамика в сентябре-декабре',
       ylab = 'Масса поставок')
+gp <- gp + geom_line()
+gp
 ```
